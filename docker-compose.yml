@@ -1,0 +1,27 @@
+version: "3.1"
+services:
+  springapp:
+    image: springapp1:1
+    networks:
+    - jenkins-docker-k8s-spring-boot-mongo_san
+    ports:
+    - 8080:8080
+    environment:
+    - MONGO_DB_HOSTNAME=mongo
+    - MONGO_DB_USERNAME=devdb
+    - MONGO_DB_PASSWORD=dev@123
+  mongo:
+    image: mongo:8.0
+    networks:
+    - jenkins-docker-k8s-spring-boot-mongo_san
+    environment:
+    - MONGO_INITDB_ROOT_USERNAME=devdb
+    - MONGO_INITDB_ROOT_PASSWORD=dev@123
+    volumes:
+    - sandeep:/data/db/
+networks:
+  jenkins-docker-k8s-spring-boot-mongo_san:
+    external: true
+volumes:
+  sandeep:
+    external: true
