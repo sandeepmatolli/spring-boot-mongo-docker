@@ -1,0 +1,67 @@
+pipeline{
+
+agent any
+	tools {
+	 maven 'maven'
+	}
+
+	environment {
+		deploy_dir = "/home/ubuntu/"
+		HOSTNAME = "ubuntu"
+		HOSTIP = "16.171.36.37"
+		HOSTPATH = "/home/ubuntu/deploy/spring-boot-mongo-docker/"
+		custom_springapp = "springapp"
+		custom_mongo = "mongo"
+		image_id = "${BUILD_NUMBER}"
+	}	
+
+
+	stages{
+		stage('checkoutcode'){
+			steps{
+			git branch: 'sandeep', credentialsId: 'git', url: 'git@github.com:sandeepmatolli/spring-boot-mongo-docker.git'
+			}
+		}
+		
+		stage('build jar'){
+			steps{
+			sh 'mvn clean package -DskipTests'
+			}
+		}
+
+		stage('docker files setup'){
+			steps{
+			sh ' rm -rf ${deploy_dir}/deploy/ && mkdir -p ${deploy_dir}/deploy/ && cp Dockerfile.app ${deploy_dir}/deploy/ && cp Dockerfile.mongo ${deploy_dir}/deploy/ && cp docker-compose.yml ${deploy_dir}/deploy/ && cp .env ${deploy_dir}/deploy/ && cp target/spring-boot-mongo-1.0.jar ${deploy_dir}/deploy/ '
+			}
+		}
+
+		stage('copy to docker server'){
+			steps{
+				sshagent(['docker-server-ssh']) {
+    				sh 'ssh -o StrictHostKeyChecking=no ${HOSTNAME}@${HOSTIP} "mkdir -p ${HOSTPATH}"'
+				sh 'scp -o StrictHostKeyChecking=no ${deploy_dir}/deploy/* ${deploy_dir}/deploy/.env ${HOSTNAME}@${HOSTIP}:${HOSTPATH}'
+				}
+			}
+		}
+
+
+		 stage('build docker images'){
+                        steps{
+                                sshagent(['docker-server-ssh']) {
+                                sh 'ssh -o StrictHostKeyChecking=no ${HOSTNAME}@${HOSTIP} "cd ${HOSTPATH} && sudo docker build -t ${custom_springapp}:${image_id} -f Dockerfile.app . && sudo docker build -t ${custom_mongo}:${image_id} -f Dockerfile.mongo ."'
+                                }
+                        }
+                }
+
+
+		stage('docker compose'){
+			steps{
+				sshagent(['docker-server-ssh']) {
+				sh 'ssh -o StrictHostKeyChecking=no ${HOSTNAME}@${HOSTIP} "cd ${HOSTPATH} && export IMAGE_TAG=${image_id} && sudo docker compose down || true && sudo docker compose up -d"'
+				}
+
+			}
+		}
+
+	}
+}
