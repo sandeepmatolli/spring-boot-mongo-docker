@@ -20,7 +20,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main',
+                git branch: 'sandeep',
                     credentialsId: 'github-ssh',
                     url: 'git@github.com:sandeepmatolli/spring-boot-mongo-docker.git'
             }
