@@ -25,7 +25,7 @@ pipeline {
             }
         }
 
-        stage('Build JAR') {
+                stage('Build JAR') {
             steps {
                 sh 'mvn clean package -DskipTests'
             }
@@ -36,7 +36,6 @@ pipeline {
                 sh '''
                     rm -rf deploy
                     mkdir -p deploy
-
                     cp target/spring-boot-mongo-1.0.jar deploy/
                     cp Dockerfile.app deploy/
                     cp Dockerfile.mongo deploy/
@@ -51,7 +50,7 @@ pipeline {
                 sshagent(credentials: ['docker-server-ssh']) {
                     sh '''
                         ssh -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_HOST} "mkdir -p ${REMOTE_APP_DIR}"
-                        scp -o StrictHostKeyChecking=no deploy/* ${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_APP_DIR}/
+                        scp -o StrictHostKeyChecking=no deploy/* deploy/.env ${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_APP_DIR}/
                     '''
                 }
             }
