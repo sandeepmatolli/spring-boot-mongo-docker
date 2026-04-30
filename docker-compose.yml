@@ -1,27 +1,37 @@
-version: "3.1"
+version: "3.8"
+
 services:
-  springapp:
-    image: springapp1:1
-    networks:
-    - jenkins-docker-k8s-spring-boot-mongo_san
-    ports:
-    - 8080:8080
-    environment:
-    - MONGO_DB_HOSTNAME=mongo
-    - MONGO_DB_USERNAME=devdb
-    - MONGO_DB_PASSWORD=dev@123
   mongo:
-    image: mongo:8.0
-    networks:
-    - jenkins-docker-k8s-spring-boot-mongo_san
+    image: custom-mongo:${IMAGE_TAG}
+    container_name: mongo
+    restart: always
     environment:
-    - MONGO_INITDB_ROOT_USERNAME=devdb
-    - MONGO_INITDB_ROOT_PASSWORD=dev@123
+      MONGO_INITDB_ROOT_USERNAME: devdb
+      MONGO_INITDB_ROOT_PASSWORD: dev@123
+    ports:
+      - "27017:27017"
     volumes:
-    - sandeep:/data/db/
-networks:
-  jenkins-docker-k8s-spring-boot-mongo_san:
-    external: true
+      - mongo_data:/data/db
+    networks:
+      - appnet
+
+  springapp:
+    image: springapp:${IMAGE_TAG}
+    container_name: springapp
+    restart: always
+    depends_on:
+      - mongo
+    ports:
+      - "8080:8080"
+    environment:
+      MONGO_DB_HOSTNAME: mongo
+      MONGO_DB_USERNAME: devdb
+      MONGO_DB_PASSWORD: dev@123
+    networks:
+      - appnet
+
 volumes:
-  sandeep:
-    external: true
+  mongo_data:
+
+networks:
+  appnet:
