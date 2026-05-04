@@ -7,12 +7,12 @@ maven 'maven'
 }
 
 environment{
-deploy_path = '/ubuntu/home/deploy/'
+deploy_path = '/home/ubuntu/deploy'
 host= "ubuntu"
 host_ip = "13.61.19.217"
 AppImage = "springapp"
 DbImage = "mongo"
-IMAGE_TAG = "${Build_number}"
+IMAGE_TAG = "${BUILD_NUMBER}"
 spring_file = "Dockerfile.app"
 Db_file = "Dockerfile.mongo"
 Deploy_file = "docker-compose.yml"
