@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   mongo:
-    image: custom-mongo:${IMAGE_TAG}
+    image: mongo:${IMAGE_TAG}
     container_name: mongo
     restart: always
     environment:
