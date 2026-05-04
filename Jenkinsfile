@@ -58,7 +58,7 @@ stages{
 		steps{
 			sshagent(['docker-server-ssh']) {
                 	sh '''
-                	ssh -o StrictHostKeyChecking=no ${host}@${host_ip} "rm -rf ${deploy_path} && mkdir -p ${deploy_path}"
+                	ssh -o StrictHostKeyChecking=no ${host}@${host_ip} "sudo rm -rf ${deploy_path} && sudo mkdir -p ${deploy_path}"
                 	scp -o StrictHostKeyChecking=no ${deploy_path}/.env ${deploy_path}/* ${host}@${host_ip}:${deploy_path}
                 	'''
 			}
