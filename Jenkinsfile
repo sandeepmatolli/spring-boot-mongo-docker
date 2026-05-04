@@ -43,8 +43,8 @@ stages{
 	stage('build setup'){
 		steps{
 		sh '''
-		rm -rf /home/ubuntu/deploy/
-		mkdir -p /home/ubuntu/deploy/
+		rm -rf deploy
+		mkdir -p deploy/
 		cp target/spring-boot-mongo-1.0.jar deploy/
 		cp Dockerfile.app deploy/
 		cp Dockerfile.mongo deploy/
@@ -58,7 +58,7 @@ stages{
 		steps{
 			sshagent(['docker-server-ssh']) {
                 	sh '''
-                	ssh -o StrictHostKeyChecking=no ${host}@${host_ip} "sudo rm -rf ${deploy_path} && sudo mkdir -p ${deploy_path}"
+                	ssh -o StrictHostKeyChecking=no ${host}@${host_ip} " rm -rf ${deploy_path} &&  mkdir -p ${deploy_path}"
                 	scp -o StrictHostKeyChecking=no deploy/.env deploy/* ${host}@${host_ip}:${deploy_path}
                 	'''
 			}
