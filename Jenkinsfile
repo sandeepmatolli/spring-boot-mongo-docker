@@ -79,7 +79,7 @@ stages{
 		steps{
 			sshagent(['docker-server-ssh']) {
                	 	sh '''
-               	 	ssh -o StrictHostKeyChecking=no ${host}@${host_ip} "cd ${deploy_path} && export DOCKER_TAG=${IMAGE_TAG} && docker compose down  || true && docker compose up -d"
+               	 	ssh -o StrictHostKeyChecking=no ${host}@${host_ip} "cd ${deploy_path} && export IMAGE_TAG=${IMAGE_TAG} && docker compose down  || true && docker compose up -d"
 	                '''
 			}
 		}
