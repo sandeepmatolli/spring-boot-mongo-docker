@@ -7,7 +7,7 @@ maven 'maven'
 }
 
 environment{
-deploy_path = '/home/ubuntu/deploy'
+deploy_path = "/home/ubuntu/deploy/"
 host= "ubuntu"
 host_ip = "13.61.19.217"
 AppImage = "springapp"
