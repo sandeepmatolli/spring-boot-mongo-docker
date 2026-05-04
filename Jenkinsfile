@@ -69,10 +69,7 @@ stages{
 		steps{
 			sshagent(['docker-server-ssh']) {
                 	sh '''
-                	ssh -o StrictHostKeyChecking=no ${host}@${host_ip}
-                	"cd ${deploy_path} &&
-                	docker build -t ${AppImage}:${IMAGE_TAG} -f ${spring_file} . &&
-                	docker build -t ${DbImage}:${IMAGE_TAG} -f ${Db_file} . "
+                	ssh -o StrictHostKeyChecking=no ${host}@${host_ip} "cd ${deploy_path} && docker build -t ${AppImage}:${IMAGE_TAG} -f ${spring_file} . && docker build -t ${DbImage}:${IMAGE_TAG} -f ${Db_file} ."
                 	'''
 			}
 		}
@@ -82,11 +79,7 @@ stages{
 		steps{
 			sshagent(['docker-server-ssh']) {
                	 	sh '''
-               	 	ssh -o StrictHostKeyChecking=no ${host}@${host_ip}
-               	 	"cd ${deploy_path} &&
-               	 	export DOCKER_TAG=${IMAGE_TAG} &&
-			docker compose down  || true &&
-			docker compose up -d"
+               	 	ssh -o StrictHostKeyChecking=no ${host}@${host_ip} "cd ${deploy_path} && export DOCKER_TAG=${IMAGE_TAG} && docker compose down  || true && docker compose up -d"
 	                '''
 			}
 		}
