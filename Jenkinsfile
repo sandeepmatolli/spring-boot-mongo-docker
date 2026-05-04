@@ -19,7 +19,8 @@ Deploy_file = "docker-compose.yml"
 }
 
 triggers{
-cron('* * * * *'), pollSCM('* * * * *')
+cron('* * * * *')
+ pollSCM('* * * * *')
 }
 
 options{
