@@ -43,8 +43,8 @@ stages{
 	stage('build setup'){
 		steps{
 		sh '''
-		rm -rf /ubuntu/home/deploy/
-		mkdir -p /ubuntu/home/deploy/
+		rm -rf /home/ubuntu/deploy/
+		mkdir -p /home/ubuntu/deploy/
 		cp target/spring-boot-mongo-1.0.jar deploy/
 		cp Dockerfile.app deploy/
 		cp Dockerfile.mongo deploy/
